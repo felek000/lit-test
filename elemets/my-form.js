@@ -70,18 +70,19 @@ export class MyForm extends LitElement {
         return html`${elements}`;
     }
 
-
+    get form(){
+        return this.shadowRoot.querySelector('form');
+    }
     async handleSubmit(ev) {
         ev.preventDefault();
-        console.log(this.formData);
         if (ev.target.hasFeedbackFor.includes('error')) {
             console.log('są błędy');
             return;
         }
         const response = await this.sendData();
-        if(response){
+        if (response) {
             this.responseStatus = {showMessage: true, status: response}
-            this.formData = {};
+            this.form.reset();
             return
         }
         this.responseStatus = {showMessage: true, status: false}
@@ -94,6 +95,7 @@ export class MyForm extends LitElement {
          */
         return new Promise((resolve, reject) => {
             setTimeout(() => {
+                console.log(this.url);
                 const response = Math.random() < 0.5;
                 resolve(response)
             }, 1000)
@@ -104,13 +106,20 @@ export class MyForm extends LitElement {
      * @description template for response info message
      * @returns {TemplateResult<1>}
      */
-    responseMessage(){
-        if(!this.responseStatus.showMessage) return html``;
-        if(this.responseStatus.status){
-            return html`<div style="color: green;">Formularz wysłany</div>`;
+    responseMessage() {
+        if (!this.responseStatus.showMessage) return html``;
+        if (this.responseStatus.status) {
+            return html`
+                <div style="color: green;">Formularz wysłany</div>`;
         }
-        return html`<div style="color: red;">Formularz nie wysłany</div>`;
+        return html`
+            <div style="color: red;">Formularz nie wysłany</div>`;
     }
+
+    handleReset(ev) {
+        ev.currentTarget.parentElement.reset();
+    }
+
     render() {
         if (!isVisible || this.formSettings === undefined) return html`
             <div>Wczytywanie</div>`;
@@ -120,6 +129,11 @@ export class MyForm extends LitElement {
                 <form @submit=${ev => ev.preventDefault()}>
                     ${this.createFields()}
                     <button type="submit">Zapisz</button>
+                    <lion-button-reset
+                            @click=${ev => this.handleReset(ev)}
+                    >Reset
+                    </lion-button-reset
+                    >
                 </form>
             </lion-form>
             ${this.responseMessage()}
