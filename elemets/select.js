@@ -13,7 +13,7 @@ const mySelect = (inputData, context) => {
         return true
     }
     const errorComponent = () => {
-        if(isValid()) return '';
+        if (isValid()) return '';
         return html`
             <lion-validation-feedback
                     data-tag-name="lion-validation-feedback"
@@ -39,7 +39,6 @@ const mySelect = (inputData, context) => {
                 @model-value-changed=${({target}) => handleChange(name, target.value, context)}
         >
             <select slot="input">
-                <option selected hidden value>Please select</option>
                 ${options}
             </select>
         </lion-select>
