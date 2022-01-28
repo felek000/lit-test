@@ -39,6 +39,15 @@
   "author": "Google LLC",
   "license": "BSD-3-Clause",
   "dependencies": {
+    "@lion/checkbox-group": "^0.18.8",
+    "@lion/core": "^0.20.0",
+    "@lion/form": "^0.12.8",
+    "@lion/input": "^0.15.8",
+    "@lion/localize": "^0.22.0",
+    "@lion/radio-group": "^0.18.8",
+    "@lion/select": "^0.14.8",
+    "@lion/textarea": "^0.13.8",
+    "@lion/validate-messages": "^0.7.8",
     "lit": "^2.0.0"
   },
   "devDependencies": {
