@@ -111,12 +111,30 @@ export class MyForm extends LitElement {
         ev.currentTarget.parentElement.reset();
     }
 
+    /**
+     * @description handle update ui for visibility
+     * @param e{Event}
+     */
     handleUpdate(e) {
+        const name = e.detail?.formPath[0]?.name ?? null;
+
         /**
-         * @TODO update only if visibility needs
+         * @description get names to watch for update
+         * @type {Set<any>}
          */
-        this.requestUpdate();
+        const visibilityTriggerNames = new Set();
+        for (const [formKey, formValue] of Object.entries(this.formSettings)) {
+            const visibilityName = formValue.visibility.split('===')[0].trim();
+            if (visibilityName && visibilityName !== 'always') visibilityTriggerNames.add(visibilityName);
+        }
+        /**
+         * @description ui needs to update
+         */
+        if (visibilityTriggerNames.has(name)) {
+            this.requestUpdate();
+        }
     }
+
     render() {
         if (!isVisible || this.formSettings === undefined) return html`
             <div>Wczytywanie</div>`;
