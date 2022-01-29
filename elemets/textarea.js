@@ -1,21 +1,30 @@
 import {loadDefaultFeedbackMessages} from "@lion/validate-messages";
 import {html} from "lit";
-import getValidators from "../helpers/validators.js";
 import '@lion/textarea/define';
 
-const myTextArea = (inputData, context) => {
+const myTextArea = (inputData) => {
     loadDefaultFeedbackMessages();
-    const {name, label, validators, updateValue} = inputData;
-    const fieldValidators = getValidators(validators);
+    const {name, label, validators} = inputData;
+
+    const handleChange = (target) => {
+        const value = target.value;
+        if (!value.length) return
+        const options = {
+            detail: {value: target.value},
+            bubbles: true,
+            composed: true,
+        }
+        target.dispatchEvent(new CustomEvent('update-element', options));
+    }
 
     return html`
         <lion-textarea
                 .label="${label}"
                 name="${name}"
                 .fieldName="${name}"
-                .validators="${[...fieldValidators]}"
+                .validators="${[...validators]}"
                 .placeholder="${label}"
-                @model-value-changed=${({target}) => updateValue(name, target.value, context)}
+                @model-value-changed=${({target}) => handleChange(target)}
                 max-rows="4"
         ></lion-textarea>
     `;

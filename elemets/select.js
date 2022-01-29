@@ -2,47 +2,37 @@ import {loadDefaultFeedbackMessages} from "@lion/validate-messages";
 import {html} from "lit";
 import '@lion/select/define';
 
-
-const mySelect = (inputData, context) => {
+const mySelect = (inputData) => {
     loadDefaultFeedbackMessages();
-    const {name, label, validators, updateValue, dataset} = inputData;
-    const isValid = () => {
-        if (validators[0] === 'required') {
-            return context.formData[name] ? true : false
-        }
-        return true
-    }
-    const errorComponent = () => {
-        if (isValid()) return '';
-        return html`
-            <lion-validation-feedback
-                    data-tag-name="lion-validation-feedback"
-                    slot="feedback" aria-live="assertive"
-                    type="error"
-            >
-                Pole jest wymagane
-            </lion-validation-feedback>`
-    };
+    const {name, label, validators, dataset} = inputData;
 
-    const options = dataset.map(el => {
+    const options = dataset.map((el,index) => {
         return html`
-            <option value="${el}">${el}</option>`;
+            <option ?selected="${index===0}" value="${el}">${el}</option>`;
     })
-    const handleChange = (name, value, context) => {
-        updateValue(name, value, context);
+    const handleChange = (target) => {
+        const value = target.value;
+        if (!value.length) return
+        const options = {
+            detail: {value: target.value},
+            bubbles: true,
+            composed: true,
+        }
+        target.dispatchEvent(new CustomEvent('update-element', options));
     }
+
     return html`
         <lion-select
+                .validators="${[...validators]}"
                 .name="${name}"
-                .label="${label}"
+                .label="${label}"  
                 .modelValue="${name}"
-                @model-value-changed=${({target}) => handleChange(name, target.value, context)}
+                @model-value-changed=${({target}) => handleChange(target)}
         >
             <select slot="input">
                 ${options}
             </select>
         </lion-select>
-        ${errorComponent()}
     `;
 };
 

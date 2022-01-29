@@ -11,7 +11,7 @@ const isVisible = (formData, visibility) => {
     else if (formData[propName] !== undefined) {
         return myVisibility[1].trim().toLowerCase() === formData[propName].trim().toLowerCase();
     }
-    return true;
+    return false;
 }
 
 export default isVisible;

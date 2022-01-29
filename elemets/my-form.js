@@ -8,6 +8,7 @@ import myTextArea from './textarea.js'
 import isVisible from "../helpers/isVisible.js";
 import myCheckBoxGr from "./checkBox.js";
 import myCheckRadioGr from "./checkRadio.js";
+import getValidators from "../helpers/validators.js";
 
 export class MyForm extends LitElement {
 
@@ -25,17 +26,6 @@ export class MyForm extends LitElement {
         this.responseStatus = {showMessage: false, status: null}
     }
 
-    /**
-     * @description update formData and dom
-     * @param name
-     * @param value
-     * @param context
-     */
-    updateValue(name, value, context) {
-        context.formData[name] = value;
-        context.requestUpdate();
-    }
-
     createFields() {
         const elements = [];
         for (const [formKey, formValue] of Object.entries(this.formSettings)) {
@@ -43,9 +33,9 @@ export class MyForm extends LitElement {
                 continue;
             }
             const options = {
-                updateValue: this.updateValue,
                 name: formKey,
-                ...formValue
+                ...formValue,
+                validators: getValidators(formValue.validators)
             }
             switch (formValue.type) {
                 case 'text':
@@ -70,16 +60,18 @@ export class MyForm extends LitElement {
         return html`${elements}`;
     }
 
-    get form(){
-        return this.shadowRoot.querySelector('form');
+    get form() {
+        return this.shadowRoot.querySelector('lion-form') ?? null;
     }
+
     async handleSubmit(ev) {
         ev.preventDefault();
         if (ev.target.hasFeedbackFor.includes('error')) {
             console.log('są błędy');
             return;
         }
-        const response = await this.sendData();
+        const formData = ev.target.serializedValue;
+        const response = await this.sendData(formData);
         if (response) {
             this.responseStatus = {showMessage: true, status: response}
             this.form.reset();
@@ -89,13 +81,13 @@ export class MyForm extends LitElement {
         console.log(response);
     }
 
-    async sendData() {
+    async sendData(formData) {
         /**
          * @description simulate api
          */
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                console.log(this.url);
+                console.log(this.url, formData);
                 const response = Math.random() < 0.5;
                 resolve(response)
             }, 1000)
@@ -120,12 +112,17 @@ export class MyForm extends LitElement {
         ev.currentTarget.parentElement.reset();
     }
 
+    handleUpdate(e) {
+        const formData = this.form.serializedValue ?? {};
+        this.formData = formData;
+    }
+
     render() {
         if (!isVisible || this.formSettings === undefined) return html`
             <div>Wczytywanie</div>`;
 
         return html`
-            <lion-form @submit=${this.handleSubmit}>
+            <lion-form @submit=${this.handleSubmit} @update-element="${this.handleUpdate}">
                 <form @submit=${ev => ev.preventDefault()}>
                     ${this.createFields()}
                     <button type="submit">Zapisz</button>
