@@ -117,9 +117,8 @@ export class MyForm extends LitElement {
      */
     handleUpdate(e) {
         const name = e.detail?.formPath[0]?.name ?? null;
-
-
         const visibilityTriggerNames = getNames(this.formSettings);
+
         /**
          * @description ui needs to update
          */
