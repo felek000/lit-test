@@ -1,6 +1,6 @@
 import {loadDefaultFeedbackMessages} from "@lion/validate-messages";
 import {html} from "lit";
-
+import '@lion/input/define';
 const myInput = (inputData) => {
         loadDefaultFeedbackMessages();
         const {name, label, validators} = inputData;
