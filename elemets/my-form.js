@@ -1,4 +1,4 @@
-import {LitElement, html} from "lit";
+import {LitElement, html,css} from "lit";
 import '@lion/form/define';
 import {localize} from '@lion/localize';
 import myInput from './input.js';
@@ -14,8 +14,14 @@ export class MyForm extends LitElement {
     static properties = {
         formSettings: {type: Object},
         responseStatus: {},
-        sendData:{type:Function}
+        sendData: {type: Function}
     }
+
+    static styles = css`
+            .disabled {
+              pointer-events:none
+            }
+          `;
 
     constructor() {
         super();
@@ -68,16 +74,18 @@ export class MyForm extends LitElement {
             console.error('są błędy');
             return;
         }
+        this.form.classList.add('disabled');
         const response = await this.sendData(ev.target.serializedValue);
         if (response) {
             this.responseStatus = {showMessage: true, status: true}
             this.form.reset();
-            return
+            this.form.classList.remove('disabled');
+            return;
         }
+        this.form.classList.remove('disabled');
         this.responseStatus = {showMessage: true, status: false}
         console.log(response);
     }
-
 
 
     /**
