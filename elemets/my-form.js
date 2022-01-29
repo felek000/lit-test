@@ -118,20 +118,25 @@ export class MyForm extends LitElement {
     handleUpdate(e) {
         const name = e.detail?.formPath[0]?.name ?? null;
 
-        /**
-         * @description get names to watch for update
-         * @type {Set<any>}
-         */
-        const visibilityTriggerNames = new Set();
-        for (const [formKey, formValue] of Object.entries(this.formSettings)) {
-            const visibilityName = formValue.visibility.split('===')[0].trim();
-            if (visibilityName && visibilityName !== 'always') visibilityTriggerNames.add(visibilityName);
-        }
+
+        const visibilityTriggerNames = getNames(this.formSettings);
         /**
          * @description ui needs to update
          */
         if (visibilityTriggerNames.has(name)) {
             this.requestUpdate();
+        }
+
+        /**
+         * @description get names to watch for update
+         */
+        function getNames(formSettings) {
+            const visibilityTriggerNames = new Set();
+            for (const [formKey, formValue] of Object.entries(formSettings)) {
+                const visibilityName = formValue.visibility.split('===')[0].trim();
+                if (visibilityName && visibilityName !== 'always') visibilityTriggerNames.add(visibilityName);
+            }
+            return visibilityTriggerNames;
         }
     }
 
