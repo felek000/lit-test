@@ -5,9 +5,10 @@ import '@lion/select/define';
 const mySelect = (inputData) => {
     loadDefaultFeedbackMessages();
     const {name, label, validators, dataset} = inputData;
+    const initialValue = dataset[0];
     const options = dataset.map((el,index) => {
         return html`
-            <option ?selected="${index===0}" value="${el}">${el}</option>`;
+            <option value="${el}">${el}</option>`;
     })
 
     return html`
@@ -15,7 +16,7 @@ const mySelect = (inputData) => {
                 .validators="${[...validators]}"
                 .name="${name}"
                 .label="${label}"  
-                .modelValue="${name}"
+                .modelValue="${initialValue}"
         >
             <select slot="input">
                 ${options}

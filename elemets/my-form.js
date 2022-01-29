@@ -115,8 +115,16 @@ export class MyForm extends LitElement {
      * @description handle update ui for visibility
      * @param e{Event}
      */
-    handleUpdate(e) {
-        const name = e.detail?.formPath[0]?.name ?? null;
+    handleUpdate({detail}) {
+
+        /**
+         * @description update one time on init - because visibility conditions
+         */
+        if (detail.initialize) {
+            this.requestUpdate();
+            return;
+        }
+        const name = detail?.formPath[0]?.name ?? null;
         const visibilityTriggerNames = getNames(this.formSettings);
 
         /**
