@@ -16,10 +16,20 @@ export class MyRequest extends LitElement {
     }
 
 
-    render() {
-        return html`<my-form .url="${this.url}" .formSettings="${this.formData}"></my-form>`;
-    }
 
+
+    async sendData(formData) {
+        /**
+         * @description simulate api
+         */
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                console.log(this.url, formData);
+                const response = Math.random() < 0.5;
+                resolve(response)
+            }, 1000)
+        });
+    }
 
     async getData() {
         const data = await new Promise((resolve, _) => {
@@ -102,6 +112,10 @@ export class MyRequest extends LitElement {
             }, 1000)
         });
         this.formData = data;
+    }
+
+    render() {
+        return html`<my-form .sendData="${this.sendData}" .formSettings="${this.formData}"></my-form>`;
     }
 }
 

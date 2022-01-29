@@ -13,9 +13,9 @@ import getValidators from "../helpers/validators.js";
 export class MyForm extends LitElement {
 
     static properties = {
-        url: {type: String},
         formSettings: {type: Object},
-        responseStatus: {}
+        responseStatus: {},
+        sendData:{type:Function}
     }
 
     constructor() {
@@ -69,10 +69,9 @@ export class MyForm extends LitElement {
             console.error('są błędy');
             return;
         }
-        const formData = ev.target.serializedValue;
-        const response = await this.sendData(formData);
+        const response = await this.sendData(ev.target.serializedValue);
         if (response) {
-            this.responseStatus = {showMessage: true, status: response}
+            this.responseStatus = {showMessage: true, status: true}
             this.form.reset();
             return
         }
@@ -80,18 +79,7 @@ export class MyForm extends LitElement {
         console.log(response);
     }
 
-    async sendData(formData) {
-        /**
-         * @description simulate api
-         */
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                console.log(this.url, formData);
-                const response = Math.random() < 0.5;
-                resolve(response)
-            }, 1000)
-        });
-    }
+
 
     /**
      * @description template for response info message
