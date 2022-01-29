@@ -15,21 +15,20 @@ export class MyForm extends LitElement {
     static properties = {
         url: {type: String},
         formSettings: {type: Object},
-        formData: {},
         responseStatus: {}
     }
 
     constructor() {
         super();
         localize.locale = 'pl-PL';
-        this.formData = {}
         this.responseStatus = {showMessage: false, status: null}
     }
 
     createFields() {
+        const formData = this?.form?.serializedValue ?? {};
         const elements = [];
         for (const [formKey, formValue] of Object.entries(this.formSettings)) {
-            if (!isVisible(this.formData, formValue.visibility)) {
+            if (!isVisible(formData, formValue.visibility)) {
                 continue;
             }
             const options = {
@@ -67,7 +66,7 @@ export class MyForm extends LitElement {
     async handleSubmit(ev) {
         ev.preventDefault();
         if (ev.target.hasFeedbackFor.includes('error')) {
-            console.log('są błędy');
+            console.error('są błędy');
             return;
         }
         const formData = ev.target.serializedValue;
@@ -113,8 +112,7 @@ export class MyForm extends LitElement {
     }
 
     handleUpdate(e) {
-        const formData = this.form.serializedValue ?? {};
-        this.formData = formData;
+        this.requestUpdate();
     }
 
     render() {
@@ -129,8 +127,7 @@ export class MyForm extends LitElement {
                     <lion-button-reset
                             @click=${ev => this.handleReset(ev)}
                     >Reset
-                    </lion-button-reset
-                    >
+                    </lion-button-reset>
                 </form>
             </lion-form>
             ${this.responseMessage()}
