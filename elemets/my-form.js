@@ -1,4 +1,4 @@
-import {LitElement, html,css} from "lit";
+import {LitElement, html, css} from "lit";
 import '@lion/form/define';
 import {localize} from '@lion/localize';
 import myInput from './input.js';
