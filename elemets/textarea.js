@@ -6,17 +6,6 @@ const myTextArea = (inputData) => {
     loadDefaultFeedbackMessages();
     const {name, label, validators} = inputData;
 
-    const handleChange = (target) => {
-        const value = target.value;
-        if (!value.length) return
-        const options = {
-            detail: {value: target.value},
-            bubbles: true,
-            composed: true,
-        }
-        target.dispatchEvent(new CustomEvent('update-element', options));
-    }
-
     return html`
         <lion-textarea
                 .label="${label}"
@@ -24,7 +13,6 @@ const myTextArea = (inputData) => {
                 .fieldName="${name}"
                 .validators="${[...validators]}"
                 .placeholder="${label}"
-                @model-value-changed=${({target}) => handleChange(target)}
                 max-rows="4"
         ></lion-textarea>
     `;

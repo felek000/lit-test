@@ -112,15 +112,20 @@ export class MyForm extends LitElement {
     }
 
     handleUpdate(e) {
+        /**
+         * @TODO update only if visibility needs
+         */
         this.requestUpdate();
     }
-
     render() {
         if (!isVisible || this.formSettings === undefined) return html`
             <div>Wczytywanie</div>`;
 
         return html`
-            <lion-form @submit=${this.handleSubmit} @update-element="${this.handleUpdate}">
+            <lion-form
+                    @submit="${this.handleSubmit}"
+                    @model-value-changed="${(e) => this.handleUpdate(e)}"
+            >
                 <form @submit=${ev => ev.preventDefault()}>
                     ${this.createFields()}
                     <button type="submit">Zapisz</button>
