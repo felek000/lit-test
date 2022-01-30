@@ -7,16 +7,29 @@
 const isVisible = (formData, visibility) => {
     const visibilityArray = visibility.split(' ');
     const propName = visibilityArray[0].trim();
-    if (propName === 'always') return true
+    if (propName === 'always') return true;
+    if (formData[propName] === undefined) return false;
+
     const condition = visibilityArray[1].trim().toLowerCase();
     const value = visibilityArray[2].trim().toLowerCase();
-    if (formData[propName] !== undefined) {
-        /**
-         * @TODO bad idea
-         */
-        return eval(`'${value}' ${condition} '${formData[propName].trim().toLowerCase()}'`);
+    const propToValidate = formData[propName].trim().toLowerCase();
+    switch (condition) {
+        case '===':
+            return value === propToValidate;
+
+        case '==':
+            return value == propToValidate;
+
+        case '>=':
+            return value >= propToValidate;
+
+        case '<=':
+            return value >= propToValidate;
+
+        default:
+            return false
     }
-    return false;
+
     // const myVisibility = visibility.split('===');
     // const propName = myVisibility[0].trim()
     // if (propName === 'always') return true
