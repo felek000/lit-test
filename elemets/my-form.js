@@ -1,6 +1,7 @@
 import {LitElement, html, css} from "lit";
-import '@lion/form/define';
+import {repeat} from 'lit/directives/repeat.js';
 import {localize} from '@lion/localize';
+import '@lion/form/define';
 import myInput from './input.js';
 import mySelect from './select.js'
 import myTextArea from './textarea.js'
@@ -31,37 +32,71 @@ export class MyForm extends LitElement {
 
     createFields() {
         const formData = this?.form?.serializedValue ?? {};
-        const elements = [];
-        for (const [formKey, formValue] of Object.entries(this.formSettings)) {
-            if (!isVisible(formData, formValue.visibility)) {
-                continue;
+        const items = Object.entries(this.formSettings).map(el => {
+            const name = el[0];
+            return {name, ...el[1],}
+        });
+
+
+        return repeat(items, item => item.name, (item, index) => {
+            if (!isVisible(formData, item.visibility)) {
+                return;
             }
             const options = {
-                name: formKey,
-                ...formValue,
-                validators: getValidators(formValue.validators)
+                name: index,
+                ...item,
+                validators: getValidators(item.validators)
             }
-            switch (formValue.type) {
+            switch (item.type) {
                 case 'text':
-                    elements.push(myInput(options, this));
-                    break
+                    return myInput(options)
                 case 'select':
-                    elements.push(mySelect(options, this));
-                    break
+                    return mySelect(options)
                 case 'textarea':
-                    elements.push(myTextArea(options, this));
-                    break
+                    return myTextArea(options)
                 case 'checkbox':
-                    elements.push(myCheckBoxGr(options, this));
-                    break
+                    return myCheckBoxGr(options)
                 case 'radio':
-                    elements.push(myCheckRadioGr(options, this));
-                    break
+                    return myCheckRadioGr(options)
                 default:
                     break
             }
-        }
-        return html`${elements}`;
+        })
+
+
+        //standart loop
+        // const formData = this?.form?.serializedValue ?? {};
+        // const elements = [];
+        // for (const [formKey, formValue] of Object.entries(this.formSettings)) {
+        //     if (!isVisible(formData, formValue.visibility)) {
+        //         continue;
+        //     }
+        //     const options = {
+        //         name: formKey,
+        //         ...formValue,
+        //         validators: getValidators(formValue.validators)
+        //     }
+        //     switch (formValue.type) {
+        //         case 'text':
+        //             elements.push(myInput(options, this));
+        //             break
+        //         case 'select':
+        //             elements.push(mySelect(options, this));
+        //             break
+        //         case 'textarea':
+        //             elements.push(myTextArea(options, this));
+        //             break
+        //         case 'checkbox':
+        //             elements.push(myCheckBoxGr(options, this));
+        //             break
+        //         case 'radio':
+        //             elements.push(myCheckRadioGr(options, this));
+        //             break
+        //         default:
+        //             break
+        //     }
+        // }
+        // return html`${elements}`;
     }
 
     get form() {
