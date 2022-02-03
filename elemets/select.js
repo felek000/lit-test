@@ -5,21 +5,22 @@ import RequiredSelect from '../helpers/RequiredSelect.js'
 
 const mySelect = (inputData) => {
   loadDefaultFeedbackMessages()
+  const markNotSelected = -1
   const { name, label, validators, dataset } = inputData
   const options = dataset.map((el, index) => {
     return html`
         <option value="${el}">${el}</option>`
-  });
+  })
 
   /**
    * @description If Select get required custom data
    * @TODO mayby better
    */
-  const mySelectValidators = validators.map(validator=>{
-    if(validator.constructor.name === 'Required'){
-      return new RequiredSelect(-1);
+  const mySelectValidators = validators.map(validator => {
+    if (validator.constructor.name === 'Required') {
+      return new RequiredSelect(markNotSelected)
     }
-    return validator;
+    return validator
   })
 
   return html`
@@ -30,7 +31,7 @@ const mySelect = (inputData) => {
               .modelValue=""
       >
           <select slot="input">
-              <option value="-1">----</option>
+              <option value="${markNotSelected}">----</option>
               ${options}
           </select>
       </lion-select>
